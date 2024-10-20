@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
@@ -10,6 +11,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 app.secret_key = os.urandom(24)  # Generate a secure random secret key
+app.config['UPLOAD_FOLDER'] = 'static/uploads'  
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  
+
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 HEALTH_PROBLEMS = [
     "Fever",
@@ -42,13 +47,15 @@ class Patient(db.Model):
 
 class DoctorRequest(db.Model):
     __tablename__ = 'doctor_requests'
-    request_id = db.Column(db.Integer, primary_key=True)
+    request_id = db.Column(db.Integer, primary_key=True,auto_increment = True)
     name = db.Column(db.String(100), nullable=False)
     specialization = db.Column(db.String(100))
     phone = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(100), unique=True)
     status = db.Column(db.String(50), default="Pending")  # Default to 'Pending'
-    password = db.Column(db.String(200),nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    profile_picture = db.Column(db.String(500), nullable=False)  # New field for profile picture path
+    resume = db.Column(db.String(500), nullable=False)  # New field for resume path
 
     
 class Doctor(UserMixin, db.Model):
@@ -56,19 +63,19 @@ class Doctor(UserMixin, db.Model):
     doctor_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     specialization = db.Column(db.String(100))
-    room_no = db.Column(db.String(10), unique=True)
     phone = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(200), nullable=False)  # For hashed passwords
-    password_update_requested = db.Column(db.Boolean, default=False)
-    new_password = db.Column(db.String(100))
-    password_verified = db.Column(db.Boolean, default=False)
+    room_no = db.Column(db.String(10), unique=True)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.department_id'))
-    update_verified = db.Column(db.String(15))
+    status = db.Column(db.String(20), default='pending')  # Default to 'pending'
+    
+    # New fields for storing the uploaded files
+    profile_picture_path = db.Column(db.String(200), nullable=False)  # Path to profile picture
+    resume_path = db.Column(db.String(200), nullable=False)  # Path to resume
     
     def get_id(self):
         return str(self.doctor_id)
-
 class PatientDoctor(db.Model):
     __tablename__ = 'patient_doctor'
     id = db.Column(db.Integer, primary_key=True)
@@ -287,6 +294,52 @@ def admin_login():
 
     return render_template('Admin/admin_login.html') 
 
+@app.route('/view_doctor_requests', methods=['GET'])
+def view_doctor_requests():
+    # Logic to retrieve doctor requests from the database
+    # Assuming there is a status field in the Doctor model to indicate if the request is pending
+    doctor_requests = DoctorRequest.query.filter_by(status='pending').all()  # Adjust this query as needed
+    
+    return render_template('Admin/view_doctor_requests.html', doctor_requests=doctor_requests)
+
+@app.route('/approve_doctor_request/<int:request_id>', methods=['GET'])
+def approve_doctor_request(request_id):
+    doctor_request = DoctorRequest.query.get(request_id)
+
+    if doctor_request:
+        # Create a new Doctor instance with profile picture and resume
+        new_doctor = Doctor(
+            name=doctor_request.name,
+            specialization=doctor_request.specialization,
+            phone=doctor_request.phone,
+            email=doctor_request.email,
+            password=doctor_request.password,  # Already hashed
+            profile_picture_path=doctor_request.profile_picture,  # Include profile picture
+            resume_path=doctor_request.resume  # Include resume
+        )
+
+        db.session.add(new_doctor)
+        doctor_request.status = "Approved"  # Update status to approved
+        db.session.commit()
+
+        flash('Doctor request approved successfully!', 'success')
+    else:
+        flash('Doctor request not found.', 'danger')
+
+    return redirect(url_for('admin_dashboard'))
+@app.route('/reject_doctor_request/<int:request_id>', methods=['POST'])
+def reject_doctor_request(request_id):
+    doctor_request = DoctorRequest.query.get(request_id)
+
+    if doctor_request:
+        db.session.delete(doctor_request)  # Remove the request
+        db.session.commit()
+        flash('Doctor request rejected successfully!', 'success')
+    else:
+        flash('Doctor request not found.', 'danger')
+
+    return redirect(url_for('admin_dashboard'))
+
 @app.route('/admin_dashboard')
 def admin_dashboard():
     return render_template('Admin/admin_dashboard.html')
@@ -294,6 +347,69 @@ def admin_dashboard():
 # =======================
 # Doctor Routes
 # =======================
+
+@app.route('/doctor_selection', methods=['GET', 'POST'])
+def doctor_selection():
+    if request.method == 'POST':
+        action = request.form['doctor_action']
+        if action == 'login':
+            return redirect(url_for('doctor_login')) 
+        elif action == 'register':
+            return redirect(url_for('register_doctor'))  # Ensure this points to the correct route
+    return render_template('Doctors/Doctor_selection.html')
+
+@app.route('/register_doctor', methods=['GET', 'POST'])
+def register_doctor():
+    if request.method == 'POST':
+        name = request.form['name']
+        specialization = request.form['specialization']
+        phone = request.form['phone']
+        email = request.form['email']
+        password = request.form['password']
+
+        # Handle profile picture and resume upload
+        profile_picture = request.files['profile_picture']
+        resume = request.files['resume']
+
+        # Secure filenames
+        profile_picture_filename = secure_filename(profile_picture.filename)
+        resume_filename = secure_filename(resume.filename)
+
+        # Define paths to save the uploaded files
+        profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], profile_picture_filename)
+        resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume_filename)
+
+        # Save the uploaded files to the specified paths
+        profile_picture.save(profile_picture_path)
+        resume.save(resume_path)
+
+        # Hash the password before saving
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+        # Create a new DoctorRequest instance with the form data and file paths
+        new_request = DoctorRequest(
+            name=name,
+            specialization=specialization,
+            phone=phone,
+            email=email,
+            password=hashed_password,  # Store the hashed password
+            profile_picture=f'uploads/{profile_picture_filename}',  # Save the relative path
+            resume=f'uploads/{resume_filename}'  # Save the relative path
+        )
+
+        # Add the new request to the database
+        db.session.add(new_request)
+        db.session.commit()
+
+        # Flash a success message
+        flash('Your registration request has been submitted and is pending approval.', 'success')
+
+        # Redirect to home or another page
+        return redirect(url_for('home'))
+
+    # Render the registration form
+    return render_template('Doctors/register_doctor.html')
+
 @app.route('/doctor_login', methods=['GET', 'POST'])
 def doctor_login():
     if request.method == 'POST':
