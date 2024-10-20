@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Optional: Your CSS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome, Dr. {{ current_user.name }}</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('doctor_update') }}">Update Profile</a></li>
+                <li><a href="{{ url_for('doctor_patients') }}">View Patients</a></li>
+                <li><a href="{{ url_for('doctor_update') }}">Update Profile</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Your Details</h2>
+        <p><strong>Specialization:</strong> {{ current_user.specialization }}</p>
+        <p><strong>Phone:</strong> {{ current_user.phone }}</p>
+        <p><strong>Email:</strong> {{ current_user.email }}</p>
+        <p><strong>Room No:</strong> {{ current_user.room_no }}</p>
+        
+        <h3>Upcoming Appointments</h3>
+        <ul>
+            {% for appointment in appointments %}
+                <li>
+                    Patient: {{ appointment.patient.name }} | Date: {{ appointment.date }} | Time: {{ appointment.time }}
+                </li>
+            {% else %}
+                <li>No upcoming appointments.</li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>
