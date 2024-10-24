@@ -29,13 +29,12 @@
         <h2>Your Details</h2>
         <div class="card mb-4">
             <div class="card-body text-center">
-                <img src="{{ url_for('static', filename=doctor.profile_picture) }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+                <img src="{{ url_for('static', filename=doctor.profile_picture_path) }}" alt="Profile Picture" class="img-thumbnail" width="100" height="100">
+                
                 <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
                 <p><strong>Phone:</strong> {{ doctor.phone }}</p>
                 <p><strong>Email:</strong> {{ doctor.email }}</p>
                 <p><strong>Room No:</strong> {{ doctor.room_no }}</p>
-                <p>Profile Picture Path: {{ doctor.profile_picture }}</p>
-
             </div>
         </div>
 

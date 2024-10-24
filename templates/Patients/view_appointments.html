@@ -9,31 +9,43 @@
 <body>
     <div class="container mt-5">
         <h1>Your Appointments</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Doctor</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appointment in appointments %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% if appointments %}
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ appointment.doctor.name }}</td>
-                        <td>{{ appointment.date }}</td>
-                        <td>{{ appointment.time }}</td>
-                        <td>{{ appointment.status }}</td>
+                        <th>Doctor Name</th>
+                        <th>Your Problem</th>
+                        <th>Date</th>
+                        <th>Room No</th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4" class="text-center">No appointments found.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.doctor_name }}</td>
+                            <td>{{ appointment.patient_problem }}</td>
+                            <td>{{ appointment.date }}</td>
+                            <td>{{ appointment.room_no }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No appointments found.</p>
+        {% endif %}
+
+        <a href="{{ url_for('patient_dashboard', patient_id=patient_id) }}" class="btn btn-primary">Back to Dashboard</a>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

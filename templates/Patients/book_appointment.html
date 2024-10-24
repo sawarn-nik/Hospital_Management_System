@@ -9,13 +9,14 @@
 <body>
     <div class="container mt-5">
         <h1>Book Appointment</h1>
-        <form method="POST" action="{{ url_for('book_appointment') }}">
+        <form method="POST" action="{{ url_for('book_appointment', patient_id=patient_id) }}">
+            <input type="hidden" name="patient_id" value="{{ patient_id }}">
             <div class="mb-3">
                 <label for="doctor_id" class="form-label">Select Doctor</label>
                 <select class="form-select" id="doctor_id" name="doctor_id" required>
                     <!-- Populate doctor options dynamically -->
                     {% for doctor in doctors %}
-                        <option value="{{ doctor.doctor_id }}">{{ doctor.name }}</option>
+                        <option value="{{ doctor.doctor_id }}">{{ doctor.name }} :- {{doctor.specialization}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -23,12 +24,8 @@
                 <label for="date" class="form-label">Date</label>
                 <input type="date" class="form-control" id="date" name="date" required>
             </div>
-            <div class="mb-3">
-                <label for="time" class="form-label">Time</label>
-                <input type="time" class="form-control" id="time" name="time" required>
-            </div>
             <button type="submit" class="btn btn-primary">Book Appointment</button>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="{{ url_for('patient_dashboard',patient_id = patient_id) }}" class="btn btn-secondary">Back to Dashboard</a>
         </form>
     </div>
     
