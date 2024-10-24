@@ -19,7 +19,7 @@
             <li class="list-group-item">Address: {{ patient.address }}</li>
             <li class="list-group-item">Email: {{ patient.email }}</li>
         </ul>
-        <a href="{{ url_for('patient_dashboard') }}" class="btn btn-primary mt-3">Back to Dashboard</a>
+        <a href="{{ url_for('patient_dashboard',patient_id=patient.patient_id) }}" class="btn btn-primary mt-3">Back to Dashboard</a>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
