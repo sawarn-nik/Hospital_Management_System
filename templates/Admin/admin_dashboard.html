@@ -25,10 +25,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('home',admin_id=admin_id) }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('logout_admin', admin_id=admin_id) }}">Logout</a>
+
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -43,7 +44,7 @@
                     <div class="card-body">
                         <h5 class="card-title">View Doctor Requests</h5>
                         <p class="card-text">View and approve doctor registration requests.</p>
-                        <a href="{{ url_for('view_doctor_requests') }}" class="btn btn-primary">View Requests</a>
+                        <a href="{{ url_for('view_doctor_requests',admin_id=admin_id) }}" class="btn btn-primary">View Requests</a>
                     </div>
                 </div>
             </div>

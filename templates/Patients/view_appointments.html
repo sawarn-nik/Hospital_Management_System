@@ -28,6 +28,7 @@
                         <th>Your Problem</th>
                         <th>Date</th>
                         <th>Room No</th>
+                        <th>Prescriptions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +38,14 @@
                             <td>{{ appointment.patient_problem }}</td>
                             <td>{{ appointment.date }}</td>
                             <td>{{ appointment.room_no }}</td>
+                            <td>
+                                {% if appointment.prescription %}
+                                    {% set prescription_url = url_for('static', filename=appointment.prescription[7:]) %}
+                                    <a href="{{ prescription_url }}" target="_blank">View Prescription</a>
+                                {% else %}
+                                    <span>No prescription uploaded.</span>
+                                {% endif %}
+                        </td>
                         </tr>
                     {% endfor %}
                 </tbody>

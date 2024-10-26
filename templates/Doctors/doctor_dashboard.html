@@ -17,7 +17,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="nav-link" href="{{ url_for('logout_doctor', doctor_id=doctor.doctor_id) }}">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -39,15 +39,46 @@
         </div>
 
         <h3>Upcoming Appointments</h3>
-        <ul class="list-group">
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="table-primary">
+            <tr>
+                <th>Patient No</th>
+                <th>Patient Name</th>
+                <th>Problem</th>
+                <th>Date</th>
+                <th>Prescription</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for appointment in appointments %}
-                <li class="list-group-item">
-                    Patient: {{ appointment.patient.name }} | Date: {{ appointment.date }} | Time: {{ appointment.time }}
-                </li>
+            <tr class="{% if appointment.prescription %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ loop.index }}</td>
+                    <td>{{ appointment.patient_name }}</td>
+                    <td>{{ appointment.patient_problem }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>
+                            {% if appointment.prescription %}
+                                {% set prescription_url = url_for('static', filename=appointment.prescription[7:]) %}
+                                <a href="{{ prescription_url }}" target="_blank">View Prescription</a>
+                            {% else %}
+                                <span>No prescription uploaded.</span>
+                            <form action="{{ url_for('upload_prescription', appointment_id=appointment.appointment_id,doctor_id=doctor.doctor_id) }}" method="post" enctype="multipart/form-data">
+                                <input type="file" name="prescription" accept=".pdf, .jpg, .png" class="form-control">
+                                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
             {% else %}
-                <li class="list-group-item">No upcoming appointments.</li>
+                <tr>
+                    <td colspan="4" class="text-center">No upcoming appointments.</td>
+                </tr>
             {% endfor %}
-        </ul>
+        </tbody>
+    </table>
+</div>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

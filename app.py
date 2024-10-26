@@ -74,6 +74,11 @@ class LogginedPatient(db.Model):
     __tablename__ = 'LogginedPatient'
     patient_id = db.Column(db.Integer,nullable = False,primary_key = True)
     status = db.Column(db.String(20),default = "Logged-out",nullable = False)
+class LogginedAdmin(db.Model):
+    __tablename__ = 'LogginedAdmin'
+    admin_id = db.Column(db.String(20),nullable = False,primary_key = True)
+    status = db.Column(db.String(20),default = "Logged-out",nullable = False)
+    
 class Admin(db.Model):
     __tablename__ = 'admin'
     admin_id = db.Column(db.String(100),nullable = False,primary_key = True)
@@ -90,9 +95,12 @@ class Appointment(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'))
     date = db.Column(db.Date, nullable=False)
-    room_no = db.Column(db.Integer,db.ForeignKey('doctors.room_no'), unique=True,)
+    room_no = db.Column(db.Integer,db.ForeignKey('doctors.room_no'))
     doctor_name = db.Column(db.String(100), nullable=False)
+    patient_name = db.Column(db.String(100), nullable=False)
     patient_problem = db.Column(db.String(100), nullable=False)
+    prescription = db.Column(db.String(500), nullable=True)
+
 class DoctorRequest(db.Model):
     __tablename__ = 'doctor_requests'
     request_id = db.Column(db.Integer, primary_key=True)
@@ -169,6 +177,11 @@ def populate_db():
         LogginedPatient(patient_id=3,status="Logged-out"),
         LogginedPatient(patient_id=4,status="Logged-out"),
     )
+    Adminusers = (
+        LogginedAdmin(admin_id="admin001",status="Logged-out"),
+        LogginedAdmin(admin_id="admin002",status="Logged-out"),
+        LogginedAdmin(admin_id="admin003",status="Logged-out"),
+    )
 
 # Insert data into the database
     for doctor in doctors:
@@ -181,7 +194,8 @@ def populate_db():
         db.session.add(user)
     for user in Patusers:
         db.session.add(user)
-
+    for user in Adminusers:
+        db.session.add(user)
 # Commit the changes to the database
     db.session.commit()
     
@@ -356,7 +370,7 @@ def book_appointment():
             return redirect(url_for('book_appointment', patient_id=patient_id))
 
         # Create a new appointment
-        new_appointment = Appointment(patient_id=patient_id, doctor_id=doctor_id, date=date, room_no=doctor.room_no,doctor_name = doctor.name,patient_problem = patient.problem)
+        new_appointment = Appointment(patient_id=patient_id, doctor_id=doctor_id, date=date, room_no=doctor.room_no,doctor_name = doctor.name,patient_problem = patient.problem,patient_name = patient.name)
         db.session.add(new_appointment)
         
         db.session.commit()
@@ -402,8 +416,12 @@ def register_admin():
         admin_password = request.form['admin_password']
         hashed_password = generate_password_hash(admin_password,method='pbkdf2:sha256')
         new_admin = Admin(admin_id=admin_id, admin_password=hashed_password)
+        new_user = LogginedAdmin(admin_id = admin_id,status="Logged-out")
         db.session.add(new_admin)
+        db.session.add(new_user)
+
         db.session.commit()
+
         flash('Admin registered successfully!', 'success')
         return redirect(url_for('admin_login'))  # Correct redirection
 
@@ -414,9 +432,13 @@ def admin_login():
     if request.method == 'POST':
         id = request.form['id']
         password = request.form['password']
-        admin = Admin.query.filter_by(admin_id=id).first()  # Fetch the admin record
-        if admin and check_password_hash(admin.admin_password, password):  # Verify password
-            return redirect(url_for('admin_dashboard'))  # Redirect to admin dashboard
+        admin = Admin.query.filter_by(admin_id=id).first()
+        User = LogginedAdmin.query.filter_by(admin_id=admin.admin_id).first()
+
+        if admin and check_password_hash(admin.admin_password, password): 
+            User.status = "Loggined"
+            db.session.commit()
+            return redirect(url_for('admin_dashboard',admin_id=admin.admin_id))  # Redirect to admin dashboard
             
         flash('Invalid admin ID or password', 'danger')  # Flash message for invalid login
         return redirect(url_for('admin_login'))  # Redirect back to the login page
@@ -448,8 +470,7 @@ def approve_doctor_request(request_id):
             status="Approved"
         )
         new_user = LogginedDoctor(
-            status="Logged-out",
-            user="Doctor"
+            status="Logged-out"
         )
         db.session.add(new_user)
         db.session.add(new_doctor)
@@ -477,7 +498,9 @@ def reject_doctor_request(request_id):
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
-    return render_template('Admin/admin_dashboard.html')
+    admin_id = request.args.get('admin_id')  # Get the admin_id from the query parameters
+
+    return render_template('Admin/admin_dashboard.html',admin_id = admin_id)
 
 # =======================
 # Doctor Routes
@@ -553,11 +576,13 @@ def doctor_login():
 
         # Fetch the doctor by email
         doctor = Doctor.query.filter_by(email=email).first()
+
         if not doctor:
             flash('Invalid email or password', 'danger')
             return render_template('Doctors/doctor_login.html')
 
         doctor_id = doctor.doctor_id
+
         User = LogginedDoctor.query.filter_by(doctor_id=doctor_id).first()
 
         # Check if doctor exists and verify password
@@ -565,7 +590,7 @@ def doctor_login():
             User.status = "Loggined"
             db.session.commit()  # Commit the changes to the database
             flash('Login successful!', 'success')
-            return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))
+            return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))  
         else:
             flash('Invalid email or password', 'danger')
 
@@ -587,22 +612,83 @@ def doctor_dashboard():
     if not doctor:
         flash('Doctor not found', 'danger')
         return redirect(url_for('doctor_login'))
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).order_by(Appointment.date.asc()).all()
 
-    return render_template('Doctors/doctor_dashboard.html', doctor=doctor)
+    return render_template('Doctors/doctor_dashboard.html', doctor = doctor, appointments=appointments)
+
+@app.route('/upload_prescription/<int:doctor_id>/<int:appointment_id>', methods=['POST'])
+def upload_prescription(doctor_id, appointment_id):
+    appointments = Appointment.query.get(appointment_id)
+    doctor = Doctor.query.get(doctor_id)
+    
+    if not appointments or not doctor:
+        flash("Appointment or Doctor not found.", "danger")
+        return redirect(url_for('doctor_dashboard', doctor=doctor,appointments=appointments))
+
+    # Handle the uploaded file
+    if 'prescription' in request.files:
+        file = request.files['prescription']
+        if file.filename != '':
+            # Save the file securely
+            filename = secure_filename(file.filename)
+            filepath = os.path.join('static/uploads', filename)
+            file.save(filepath)
+            
+            # Update the appointment's prescription path in the database
+            appointments.prescription = filepath
+            db.session.commit()
+            flash("Prescription uploaded successfully!", "success")
+        else:
+            flash("No file selected.", "warning")
+
+    # Redirect back to the doctor's dashboard
+    return redirect(url_for('doctor_dashboard', doctor_id=doctor_id,appointments=appointments))
 
 # =======================
 # logout
 # =======================
 
-@app.route('/logout')
-def logout():
-    
+@app.route('/logout_patient')
+def logout_patient():
+    patient_id = request.args.get('patient_id')
+    User = LogginedPatient.query.filter_by(patient_id=patient_id).first()
+    User.status = "Logged-out"
+    db.session.commit()
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))  # Redirect to home page
 
+@app.route('/logout_doctor')
+def logout_doctor():
+    doctor_id = request.args.get('doctor_id')
+    User = LogginedDoctor.query.filter_by(doctor_id=doctor_id).first()
+    # Check if the doctor exists
+    if User:
+        User.status = "Logged-out"  # Update the status to 'Logged-out'
+        db.session.commit()  # Commit the changes
+        flash('You have successfully logged out.', 'success')
+        return redirect(url_for('home'))
+    else:
+        flash('Doctor not found. Unable to log out.', 'danger')
+        return redirect(url_for('doctor_login'))
+
+@app.route('/logout_admin')
+def logout_admin():
+    admin_id = request.args.get('admin_id')
+    print(admin_id)
+    User = LogginedAdmin.query.filter_by(admin_id=admin_id).first()
+    # Check if the admin exists
+    if User:
+        User.status = "Logged-out"  # Update the status to 'Logged-out'
+        db.session.commit()  # Commit the changes
+        flash('You have successfully logged out.', 'success')
+        return redirect(url_for('home'))
+    else:
+        flash('Admin not found. Unable to log out.', 'danger')
+        return redirect(url_for('admin_login'))
+
 if __name__ == '__main__':
     with app.app_context():
-
+        # db.drop_all()
         db.create_all()  # Creates the tables in the database
         if not (Doctor.query.first() or Patient.query.first() or Admin.query.first()):
             populate_db()
