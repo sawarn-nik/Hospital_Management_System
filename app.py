@@ -4,6 +4,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import secrets
+import string
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:1234@localhost/Hospital"
@@ -29,6 +34,35 @@ HEALTH_PROBLEMS = [
     "Others (please specify)"
 ]
 
+def send_email(emailID,emailsubject,emailbody,password):
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 465
+    sender_email = "apollohospital069@gmail.com"
+    sender_password = "zqyz nlki iypt aeng"
+
+    recipient_email = emailID
+    subject = emailsubject
+    body = emailbody+password
+
+    message = MIMEMultipart()
+    message["From"] = sender_email
+    message["To"] = recipient_email
+    message["Subject"] = subject
+
+    message.attach(MIMEText(body, "plain"))
+
+    try:
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient_email, message.as_string())
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+def generate_password(length=8):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(secrets.choice(characters) for _ in range(length))
+    return password
 
 class Patient(db.Model):
     __tablename__ = 'patients'
@@ -109,7 +143,6 @@ class DoctorRequest(db.Model):
     phone = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(100), unique=True)
     status = db.Column(db.String(50), default="Pending")  # Default to 'Pending'
-    password = db.Column(db.String(200), nullable=False)
     profile_picture = db.Column(db.String(500), nullable=False)  # New field for profile picture path
     resume = db.Column(db.String(500), nullable=False)  # New field for resume path
 
@@ -453,9 +486,13 @@ def view_doctor_requests():
     
     return render_template('Admin/view_doctor_requests.html', doctor_requests=doctor_requests)
 
+
+
 @app.route('/approve_doctor_request/<int:request_id>', methods=['GET'])
 def approve_doctor_request(request_id):
     doctor_request = DoctorRequest.query.get(request_id)
+    Randompassword = generate_password()
+    hashed_password = generate_password_hash(Randompassword, method='pbkdf2:sha256')
 
     if doctor_request:
         # Create a new Doctor instance with profile picture and resume
@@ -464,7 +501,7 @@ def approve_doctor_request(request_id):
             specialization=doctor_request.specialization,
             phone=doctor_request.phone,
             email=doctor_request.email,
-            password=doctor_request.password,  # Already hashed
+            password= hashed_password,  # Already hashed
             profile_picture_path=doctor_request.profile_picture,  # Include profile picture
             resume_path=doctor_request.resume, # Include resume
             status="Approved"
@@ -476,7 +513,7 @@ def approve_doctor_request(request_id):
         db.session.add(new_doctor)
         doctor_request.status = "Approved"  # Update status to approved
         db.session.commit()
-
+        send_email(doctor_request.email,"Account Verification","Your Account is Verified now you can login using this password: ",Randompassword)
         flash('Doctor request approved successfully!', 'success')
     else:
         flash('Doctor request not found.', 'danger')
@@ -486,6 +523,7 @@ def approve_doctor_request(request_id):
 def reject_doctor_request(request_id):
     doctor_request = DoctorRequest.query.get(request_id)
     doctor_request.status = "Rejected"  # Update status to approved
+    send_email(doctor_request.email,"Account Request Rejected","Your Account is not Verified.","You can try again after 15 days.")
 
     if doctor_request:
         db.session.delete(doctor_request)  # Remove the request
@@ -523,7 +561,6 @@ def register_doctor():
         specialization = request.form['specialization']
         phone = request.form['phone']
         email = request.form['email']
-        password = request.form['password']
 
         # Handle profile picture and resume upload
         profile_picture = request.files['profile_picture']
@@ -541,16 +578,12 @@ def register_doctor():
         profile_picture.save(profile_picture_path)
         resume.save(resume_path)
 
-        # Hash the password before saving
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-
         # Create a new DoctorRequest instance with the form data and file paths
         new_request = DoctorRequest(
             name=name,
             specialization=specialization,
             phone=phone,
             email=email,
-            password=hashed_password,  # Store the hashed password
             profile_picture=f'uploads/{profile_picture_filename}',  # Save the relative path
             resume=f'uploads/{resume_filename}'  # Save the relative path
         )
@@ -688,7 +721,7 @@ def logout_admin():
 
 if __name__ == '__main__':
     with app.app_context():
-        # db.drop_all()
+        # db.dop_all()
         db.create_all()  # Creates the tables in the database
         if not (Doctor.query.first() or Patient.query.first() or Admin.query.first()):
             populate_db()
