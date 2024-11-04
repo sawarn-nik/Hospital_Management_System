@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Departments</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-image: url('/static/uploads/backgroun1.avif'); /* Add your background image here */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Prevent repetition */
+            background-position: center; /* Center the image */
+            font-family: Arial, sans-serif;
+            color: #004d40; /* Default text color */
+        }
+
+        .header {
+            background-color: #004d40;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+
+        .department-section {
+            padding: 60px 0;
+        }
+
+        .department-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .department-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .department-icon {
+            font-size: 2.5rem;
+            color: #004d40;
+            margin-bottom: 20px;
+        }
+
+        .department-title {
+            color: #004d40;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .department-description {
+            color: #666;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: #004d40;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #00332d;
+        }
+
+        .btn-back-dashboard {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <section class="header">
+        <h1>Our Hospital Departments</h1>
+        <p>Providing specialized care across a variety of medical fields to ensure comprehensive healthcare for all patients.</p>
+    </section>
+
+    <!-- Departments Section -->
+    <section class="department-section">
+        <div class="container">
+            <div class="row">
+                <!-- Card for Cardiology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-heartbeat department-icon"></i>
+                            <h5 class="department-title">Cardiology</h5>
+                            <p class="department-description">Our Cardiology department provides expert diagnosis and treatment for heart-related conditions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Neurology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-brain department-icon"></i>
+                            <h5 class="department-title">Neurology</h5>
+                            <p class="department-description">Specialized in treating disorders of the nervous system with cutting-edge care and technology.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Orthopedics -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-bone department-icon"></i>
+                            <h5 class="department-title">Orthopedics</h5>
+                            <p class="department-description">Our Orthopedic department is equipped to treat bone, joint, and muscle-related conditions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Pediatrics -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-baby department-icon"></i>
+                            <h5 class="department-title">Pediatrics</h5>
+                            <p class="department-description">Providing compassionate care for infants, children, and adolescents with specialized services.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Radiology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-x-ray department-icon"></i>
+                            <h5 class="department-title">Radiology</h5>
+                            <p class="department-description">State-of-the-art imaging services for accurate diagnostics and comprehensive care.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Oncology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-ribbon department-icon"></i>
+                            <h5 class="department-title">Oncology</h5>
+                            <p class="department-description">Advanced treatment options and support for cancer patients with a compassionate approach.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Gynecology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-female department-icon"></i>
+                            <h5 class="department-title">Gynecology</h5>
+                            <p class="department-description">Specialized care for women's health issues, from reproductive health to menopause management.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Dermatology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-user-md department-icon"></i>
+                            <h5 class="department-title">Dermatology</h5>
+                            <p class="department-description">Expert treatment for skin conditions, utilizing the latest techniques and treatments.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Gastroenterology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-syringe department-icon"></i>
+                            <h5 class="department-title">Gastroenterology</h5>
+                            <p class="department-description">Comprehensive care for digestive system issues with a focus on patient comfort and wellness.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Urology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-toilet department-icon"></i>
+                            <h5 class="department-title">Urology</h5>
+                            <p class="department-description">Specialized care for urinary tract issues, including kidney, bladder, and prostate treatments.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Ophthalmology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-eye department-icon"></i>
+                            <h5 class="department-title">Ophthalmology</h5>
+                            <p class="department-description">Comprehensive eye care services, including vision correction, routine eye exams, and advanced disease treatment.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Psychiatry -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-user-md department-icon"></i>
+                            <h5 class="department-title">Psychiatry</h5>
+                            <p class="department-description">Mental health care, including therapy and medication for emotional and psychological support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Endocrinology -->
+                <div class="col-md-4 mb-4">
+                    <div class="card department-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-dna department-icon"></i>
+                            <h5 class="department-title">Endocrinology</h5>
+                            <p class="department-description">Hormone-related disorder management, specializing in diabetes, thyroid issues, and more.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card for ENT -->
+<div class="col-md-4 mb-4">
+    <div class="card department-card text-center">
+        <div class="card-body">
+            <i class="fas fa-user-md department-icon"></i>
+            <h5 class="department-title">ENT (Ear, Nose, and Throat)</h5>
+            <p class="department-description">Expert care for ear, nose, and throat issues, including hearing loss and sinus disorders, utilizing advanced techniques for optimal recovery.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Card for Accident & Emergency -->
+<div class="col-md-4 mb-4">
+    <div class="card department-card text-center">
+        <div class="card-body">
+            <i class="fas fa-ambulance department-icon"></i>
+            <h5 class="department-title">Accident & Emergency</h5>
+            <p class="department-description">24/7 emergency care for critical injuries and urgent conditions, staffed by experienced professionals ready for immediate response.</p>
+        </div>
+    </div>
+</div>
+
+
+
+            </div>
+
+            <div class="btn-back-dashboard">
+                <a href="{{ url_for('patient_dashboard', patient_id=patient_id) }}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Apollo Hospital</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-image: url('/static/uploads/backgroun1.avif'); /* Add your background image here */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Prevent repetition */
+            font-family: Arial, sans-serif;
+            color: #004d40; /* Default text color */
+        }
+
+        .main-container {
+            padding: 50px 0;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #004d40;
+            text-align: center;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .title span {
+            color: #ffab00;
+        }
+
+        .about-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .about-images img {
+            width: 100%;  /* Adjusted for responsiveness */
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .about-images img:hover {
+            transform: scale(1.05);
+        }
+
+        .vision-section, .mission-section {
+            margin-top: 50px;
+            animation: slideIn 1.5s ease;
+        }
+
+        .highlight {
+            color: #ffab00;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Additional styles for the graph section */
+        .data-visualization img {
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        /* New styles for layout */
+        .graph-section {
+            margin-top: 40px;
+        }
+
+        .graph-header {
+            margin-bottom: 30px;
+        }
+
+        /* Styles for the "Back to Dashboard" button */
+        .dashboard-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-btn {
+            background-color: #004d40;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dashboard-btn:hover {
+            background-color: #003833;
+            color: white;
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Section -->
+    <div class="container main-container">
+        <h1 class="title">Welcome to <span>Apollo</span></h1>
+
+        <!-- About Us Section -->
+        <div class="row mt-5">
+            <div class="col-md-6 about-text">
+                <h2>About Us</h2>
+                <p>
+                    At <span class="highlight">Apollo</span>, we prioritize compassionate care combined with cutting-edge medical services. Our hospital is dedicated to the well-being of our patients, offering a holistic approach that addresses both physical and emotional needs. We strive to create an environment where every patient feels supported and respected.
+                </p>
+                <p>
+                    With a dedicated team of medical professionals and state-of-the-art facilities, <span class="highlight">Apollo</span> is committed to providing exceptional healthcare services that foster health, healing, and hope.
+                </p>
+            </div>
+            <div class="col-md-6 about-images">
+                <img src="/static/uploads/about1.jpg" alt="Hospital Interior">
+            </div>
+        </div>
+
+        <!-- Vision and Mission Section -->
+        <div class="row vision-section">
+            <div class="col-md-6 about-images">
+                <img src="/static/uploads/about2.webp" alt="Medical Team">
+            </div>
+            <div class="col-md-6 about-text">
+                <h2>Our Vision</h2>
+                <p>
+                    To be a beacon of excellence in healthcare, where patients receive innovative, high-quality care that promotes lifelong well-being.
+                </p>
+                <h2>Our Mission</h2>
+                <p>
+                    To deliver exceptional healthcare services with compassion, integrity, and a commitment to continuous improvement, creating a positive impact in our community.
+                </p>
+            </div>
+        </div>
+
+        <!-- What Makes Us Special Section -->
+        <div class="row mission-section">
+            <div class="col-md-12 text-center mt-5">
+                <h2>What Makes Us Special?</h2>
+            </div>
+        </div>
+        <div class="row text-center mt-3">
+            <div class="col-md-4">
+                <i class="fas fa-stethoscope fa-3x" style="color: #ffab00"></i>
+                <h4>Advanced Medical Care</h4>
+                <p>Our team of specialists offers comprehensive care using the latest medical technologies and treatment methods.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-heartbeat fa-3x" style="color: #ffab00"></i>
+                <h4>Patient-Centered Approach</h4>
+                <p>A compassionate and supportive environment designed to make patients feel valued and cared for.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-clinic-medical fa-3x" style="color: #ffab00"></i>
+                <h4>Modern Facilities</h4>
+                <p>State-of-the-art facilities equipped to handle a range of medical needs with comfort and efficiency.</p>
+            </div>
+        </div>
+
+        <!-- Data Visualization Section -->
+        <div class="row mt-5 data-visualization graph-section">
+            <div class="col-md-12 text-center graph-header">
+                <h2>Data Visualizations</h2>
+                <p>Below are some insights into our patient statistics and treatment outcomes.</p>
+            </div>
+        </div>
+        <div class="row text-center mt-3">
+            <img src="static/all_charts.png" class="img-fluid">
+        </div>
+
+        <!-- Back to Dashboard Button -->
+        <div class="dashboard-btn-container">
+            <a href="{{ url_for('patient_dashboard', patient_id=patient_id) }}" class="btn dashboard-btn">Back to Dashboard</a>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS, jQuery, and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

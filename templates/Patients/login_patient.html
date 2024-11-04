@@ -5,32 +5,174 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Login</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+
+
+        /* Brightened background image */
+        body {
+            background-image: url('/static/uploads/backgroun1.avif'); /* Add your background image here */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Prevent repetition */
+            font-family: Arial, sans-serif;
+            color: #004d40; /* Default text color */
+        }
+
+        /* Overlay for a slight dim effect */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Card styling */
+        .card {
+            background-color: rgba(255, 255, 255, 0.85); /* Light transparent background */
+            color: #004d40; /* Dark teal text color */
+            border-radius: 12px;
+            padding: 50px;
+            max-width: 600px;
+            animation: fadeInUp 0.8s ease-in-out;
+            box-shadow: 0 4px 20px rgba(0, 77, 64, 0.4), 0 6px 20px rgba(0, 77, 64, 0.2); /* Teak shadow effect */
+        }
+
+        .card-title {
+            color: #004d40;
+        }
+
+        /* Button primary style */
+        .btn-primary {
+            background-color: #00796b;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #48a999;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Button secondary style */
+        .btn-secondary {
+            background-color: #009688;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #80cbc4;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Center card in viewport */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Animation for fade-in effect */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Carousel styling */
+        .carousel-inner {
+            height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .carousel-inner img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Patient Login</h1>
-        <form method="POST">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a href="{{ url_for('patient_selection') }}" class="btn btn-secondary">Back</a>
-        </form>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="mt-3">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
+    <div class="container">
+        <div class="card text-center">
+            <h1 class="card-title display-5 fw-bold mb-4">Patient Login</h1>
+
+            <!-- Carousel with Health Tips -->
+            <div id="healthTipsCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active" data-bs-interval="2000">
+                        <img src="/static/uploads/balanced_diet.jpg" class="d-block w-100" alt="Eat Healthy">
+                        <div class="carousel-caption">
+                            <h5>Eat Healthy</h5>
+                            <p>Include fruits, vegetables, and whole grains in your diet.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-bs-interval="2000">
+                        <img src="/static/uploads/exercise1.jpg" class="d-block w-100" alt="Exercise Regularly">
+                        <div class="carousel-caption">
+                            <h5>Exercise Regularly</h5>
+                            <p>Aim for at least 30 minutes of physical activity each day.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-bs-interval="2000">
+                        <img src="/static/uploads/sleep.jpg" class="d-block w-100" alt="Get Enough Sleep">
+                        <div class="carousel-caption">
+                            <h5>Get Enough Sleep</h5>
+                            <p>Quality sleep is essential for good health and well-being.</p>
+                        </div>
+                    </div>
+                    
                 </div>
-            {% endif %}
-        {% endwith %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#healthTipsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#healthTipsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form method="POST">
+                <div class="mb-3 text-start">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                    <a href="{{ url_for('patient_selection') }}" class="btn btn-secondary btn-lg">Back</a>
+                </div>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mt-3">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

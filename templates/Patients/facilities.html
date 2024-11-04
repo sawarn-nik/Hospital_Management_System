@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Facilities</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f4;
+            color: #333;
+        }
+
+        .header {
+            background-color: #004d40;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+
+        .facility-section {
+            padding: 60px 0;
+        }
+
+        .facility-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .facility-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .facility-icon {
+            font-size: 2.5rem;
+            color: #004d40;
+            margin-bottom: 20px;
+        }
+
+        .facility-title {
+            color: #004d40;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .facility-description {
+            color: #666;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: #004d40;
+            border: none;
+            margin-bottom: 50px;
+        }
+
+        .btn-primary:hover {
+            background-color: #00332d;
+        }
+        body {
+            background-image: url('/static/uploads/backgroun1.avif'); /* Add your background image here */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Prevent repetition */
+            background-position: center; /* Center the image */
+            font-family: Arial, sans-serif;
+            color: #004d40; /* Default text color */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <section class="header">
+        <h1>Our World-Class Facilities</h1>
+        <p>Explore the top-tier amenities and medical advancements at our hospital, designed for the comfort and care of our patients.</p>
+    </section>
+
+    <!-- Facilities Section -->
+    <section class="facility-section">
+        <div class="container">
+            <div class="row">
+                <!-- Card for Intensive Care Unit -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://media.istockphoto.com/id/1465794215/photo/doctor-holding-defibrillator-on-unconscious-female-patients-chest-in-intensive-care-unit.jpg?s=2048x2048&w=is&k=20&c=Kxxxvz_Z9OzzCom3NJhaX13-jtiGyeQhU4w_l5djY6Y=" class="card-img-top" alt="Intensive Care Unit">
+                        <div class="card-body text-center">
+                            <i class="fas fa-procedures facility-icon"></i>
+                            <h5 class="facility-title">Intensive Care Unit (ICU)</h5>
+                            <p class="facility-description">Our state-of-the-art ICU is equipped with advanced life-support and monitoring systems to ensure top-level care for critical patients.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Advanced Imaging Center -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://plus.unsplash.com/premium_photo-1682145288913-979906a9ebc8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Advanced Imaging Center">
+                        <div class="card-body text-center">
+                            <i class="fas fa-x-ray facility-icon"></i>
+                            <h5 class="facility-title">Advanced Imaging Center</h5>
+                            <p class="facility-description">Our imaging center features the latest MRI, CT, and ultrasound machines, providing precise and fast diagnostics.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Emergency Services -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Emergency Services">
+                        <div class="card-body text-center">
+                            <i class="fas fa-ambulance facility-icon"></i>
+                            <h5 class="facility-title">Emergency Services</h5>
+                            <p class="facility-description">Our 24/7 emergency department is staffed with experienced medical professionals for immediate, critical care.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Surgical Suites -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGljdSUyMHJvb218ZW58MHx8MHx8fDA%3D" class="card-img-top" alt="Surgical Suites">
+                        <div class="card-body text-center">
+                            <i class="fas fa-stethoscope facility-icon"></i>
+                            <h5 class="facility-title">Advanced Surgical Suites</h5>
+                            <p class="facility-description">Our surgical suites are equipped with cutting-edge technology to perform complex surgeries with precision and safety.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Rehabilitation Center -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://plus.unsplash.com/premium_photo-1661698439782-4264db0fc2f0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Rehabilitation Center">
+                        <div class="card-body text-center">
+                            <i class="fas fa-heartbeat facility-icon"></i>
+                            <h5 class="facility-title">Rehabilitation Center</h5>
+                            <p class="facility-description">Our rehabilitation center offers personalized therapies for post-surgical recovery, physical therapy, and mental well-being.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Laboratory Services -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d" class="card-img-top" alt="Laboratory Services">
+                        <div class="card-body text-center">
+                            <i class="fas fa-vials facility-icon"></i>
+                            <h5 class="facility-title">Laboratory Services</h5>
+                            <p class="facility-description">Our labs provide comprehensive testing and diagnostics, supporting accurate and timely medical treatments.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://media.istockphoto.com/id/1519373399/photo/welcome-little-one.jpg?s=2048x2048&w=is&k=20&c=vooHTVeuBhUNEcfa-zr2zvZeS4t_aZu2ojZFiZEyUYQ=" class="card-img-top" alt="Maternity Services">
+                        <div class="card-body text-center">
+                            <i class="fas fa-baby facility-icon"></i>
+                            <h5 class="facility-title">Maternity Services</h5>
+                            <p class="facility-description">Our specialized maternity services offer a comfortable and safe environment for mother and baby, from prenatal care to postnatal support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Pediatric Care -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://plus.unsplash.com/premium_photo-1666299796285-e45f4dffd49e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Pediatric Care">
+                        <div class="card-body text-center">
+                            <i class="fas fa-child facility-icon"></i>
+                            <h5 class="facility-title">Pediatric Care</h5>
+                            <p class="facility-description">Our pediatric department is dedicated to providing compassionate care for infants, children, and adolescents.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Pharmacy Services -->
+                <div class="col-md-4 mb-4">
+                    <div class="card facility-card">
+                        <img src="https://images.unsplash.com/photo-1580281658223-9b93f18ae9ae?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Pharmacy Services">
+                        <div class="card-body text-center">
+                            <i class="fas fa-pills facility-icon"></i>
+                            <h5 class="facility-title">Pharmacy Services</h5>
+                            <p class="facility-description">Our in-house pharmacy provides a wide range of medicines and medical supplies for patient convenience.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('ContactUs',patient_id=patient_id) }}" class="btn btn-primary btn-lg">Contact Us for More Information</a>
+    </div>
+    <div class="text-center mt-4">
+    <a href="{{ url_for('patient_dashboard', patient_id=patient_id) }}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <!-- Bootstrap JS, jQuery, and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

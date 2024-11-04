@@ -43,34 +43,28 @@
             margin-bottom: 30px;
         }
 
-        /* Button styles with hover effects */
-        .btn-role {
-            width: 100%;
-            padding: 15px;
-            margin: 15px 0;
-            font-size: 1.2em;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.1); /* Transparent buttons */
+        /* Card styles for role selection */
+        .role-card {
+            background-color: rgba(255, 255, 255, 0.15); /* Increased opacity */
+            border: none;
             color: #fff;
-            border: 2px solid #fff;
-            transition: background-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            border-radius: 10px;
         }
 
-        .btn-role:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+        .role-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(255, 255, 255, 0.2);
         }
 
-        /* Adjusting button outline styles */
-        .btn-outline-primary {
-            border-color: #fff;
-            color: #fff;
-        }
-
-        .btn-outline-primary:hover {
-            color: #fff;
-            border-color: #fff;
+        /* Card image styling */
+        .role-image {
+            height: 23vw;
+            object-fit: center;
+            width: 95%;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
     </style>
     <script>
@@ -92,12 +86,39 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Welcome to the Hospital Management System</h1>
+        <h1 class="text-center">Welcome to Apollo Hospitals</h1>
         <p class="text-center">Please select your role:</p>
-        <div class="d-grid gap-2">
-            <button type="button" class="btn btn-outline-primary btn-role" onclick="submitRole('admin')">Admin</button>
-            <button type="button" class="btn btn-outline-primary btn-role" onclick="submitRole('patient')">Patient</button>
-            <button type="button" class="btn btn-outline-primary btn-role" onclick="submitRole('doctor')">Doctor</button>
+        <div class="row g-4">
+            <!-- Admin Card -->
+            <div class="col-md-4">
+                <div class="card role-card text-center" onclick="submitRole('admin')">
+                    <img src="/static/uploads/administrator.png" class="role-image" alt="Admin Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Admin</h5>
+                        <p class="card-text">Manage hospital operations and oversee resources efficiently.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Patient Card -->
+            <div class="col-md-4">
+                <div class="card role-card text-center" onclick="submitRole('patient')">
+                    <img src="/static/uploads/patient.png" class="role-image" alt="Patient Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Patient</h5>
+                        <p class="card-text">Access personal health records, book appointments, and more.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Doctor Card -->
+            <div class="col-md-4">
+                <div class="card role-card text-center" onclick="submitRole('doctor')">
+                    <img src="/static/uploads/doctor (1).png" class="role-image" alt="Doctor Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Doctor</h5>
+                        <p class="card-text">View patient details, manage treatments, and update records.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

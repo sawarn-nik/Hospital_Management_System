@@ -9,6 +9,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import secrets
 import string
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import date
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:1234@localhost/Hospital"
@@ -38,7 +41,7 @@ def send_email(emailID,emailsubject,emailbody,password):
     smtp_server = "smtp.gmail.com"
     smtp_port = 465
     sender_email = "apollohospital069@gmail.com"
-    sender_password = "zqyz nlki iypt aeng"
+    sender_password = "xqho lrkx ekej nxrx"
 
     recipient_email = emailID
     subject = emailsubject
@@ -122,6 +125,14 @@ class PatientDoctor(db.Model):
     room_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.doctor_id'))
+
+class Feedback(db.Model):
+    __tablename__ = 'Feedback'
+    feedbackId = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(15))
+    email = db.Column(db.String(100))
+    feedback = db.Column(db.String(500), nullable=False)
 
 class Appointment(db.Model):
     __tablename__ = 'appointments'
@@ -280,7 +291,7 @@ def register_patient():
         email = request.form['email']
         password = request.form['password']
         problem = request.form['problem']
-        
+        bp = request.form['BP']
         # If "Others" is selected, take the input from the other field
         if problem == "Others (please specify)":
             problem = request.form.get('other_problem', '')
@@ -299,7 +310,8 @@ def register_patient():
             address=address,
             email=email,
             password=hashed_password,  # Store the hashed password
-            problem=problem  # Store the selected problem
+            problem=problem,
+            bloodpressure = bp
         )
         new_user = LogginedPatient(
             status = "Logged-out"
@@ -309,7 +321,6 @@ def register_patient():
         db.session.add(new_patient)
         db.session.commit()
 
-        flash('Registration successful! You can now log in.', 'success')
         return redirect(url_for('patient_selection'))  # Redirect back to the selection page
 
     health_problems = HEALTH_PROBLEMS  # Pass health problems to the template
@@ -334,10 +345,7 @@ def login_patient():
         if User and check_password_hash(patient.password, password):
             User.status = "Loggined"
             db.session.commit()
-            flash('Login successful!', 'success')
             return redirect(url_for('patient_dashboard', patient_id = patient_id))  # Redirect to patient dashboard
-        else:
-            flash('Invalid email or password', 'danger')
 
     return render_template('Patients/login_patient.html')  # Render login page for GET requests
 
@@ -346,17 +354,14 @@ def patient_dashboard():
     patient_id = request.args.get('patient_id')
 
     if not patient_id:
-        flash('Patient ID is missing', 'danger')
         return redirect(url_for('login_patient'))
     
     User = LogginedPatient.query.filter_by(patient_id=patient_id).first()
     if not User or User.status != "Loggined":
-        flash('Please log in to access the dashboard', 'danger')
         return redirect(url_for('doctor_login'))
 
     patient = Patient.query.get(patient_id)
     if not patient:
-        flash('Patient not found','danger')
         return redirect(url_for('login_patient'))
     return render_template('Patients/patient_dashboard.html', patient=patient)
 
@@ -364,17 +369,14 @@ def patient_dashboard():
 def view_profile():
     patient_id = request.args.get('patient_id')
     if not patient_id:
-        flash('Patient ID is missing', 'danger')
         return redirect(url_for('login_patient'))
     
     User = LogginedPatient.query.filter_by(patient_id=patient_id).first()
     if not User or User.status != "Loggined":
-        flash('Please log in to access the dashboard', 'danger')
         return redirect(url_for('doctor_login'))
 
     patient = Patient.query.get(patient_id)  # Fetch patient details
     if not patient:
-        flash('Patient not found.', 'danger')
         return redirect(url_for('patient_dashboard'))  # Redirect if patient not found
 
     return render_template('Patients/view_profile.html', patient=patient)  # Pass patient to the template
@@ -383,7 +385,6 @@ def view_profile():
 def book_appointment():
     patient_id = request.args.get('patient_id')
     if not patient_id:
-        flash('Patient ID is missing', 'danger')
         return redirect(url_for('login_patient'))
 
     if request.method == 'POST':
@@ -392,14 +393,12 @@ def book_appointment():
 
         # Validate the date (ensure it's in the future)
         if datetime.strptime(date, '%Y-%m-%d').date() < datetime.today().date():
-            flash('Please select a valid date.', 'danger')
             return redirect(url_for('book_appointment', patient_id=patient_id))
 
         doctor = Doctor.query.filter_by(doctor_id=doctor_id).first()
         patient = Patient.query.filter_by(patient_id=patient_id).first()
 
         if not doctor:
-            flash('Selected doctor not found.', 'danger')
             return redirect(url_for('book_appointment', patient_id=patient_id))
 
         # Create a new appointment
@@ -407,7 +406,6 @@ def book_appointment():
         db.session.add(new_appointment)
         
         db.session.commit()
-        flash('Appointment booked successfully!', 'success')
         return redirect(url_for('patient_dashboard', patient_id=patient_id))
 
     # Fetch doctors to populate the select options
@@ -418,16 +416,45 @@ def book_appointment():
 def view_appointments():
     patient_id = request.args.get('patient_id')
     if not patient_id:
-        flash('Patient ID is missing', 'danger')
         return redirect(url_for('login_patient'))
 
     # Fetch the appointments for the logged-in patient
     appointments = Appointment.query.filter_by(patient_id=patient_id).all()
 
-    if not appointments:
-        flash('No appointments found.', 'info')
-
     return render_template('Patients/view_appointments.html', appointments=appointments,patient_id = patient_id)
+
+@app.route('/AboutUs')
+def AboutUs():
+    patient_id = request.args.get('patient_id')
+    return render_template('Patients/about.html',patient_id = patient_id)
+@app.route('/ContactUs', methods=['GET', 'POST'])
+def ContactUs():
+    patient_id = request.args.get('patient_id')
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        contact = request.form['phone']
+        feedback = request.form['feedback']
+        
+        new_feedback = Feedback(
+            name = name,
+            email = email,
+            phone = contact,
+            feedback = feedback
+        )
+        db.session.add(new_feedback)
+        db.session.commit()
+        return redirect(url_for('ContactUs'))
+    return render_template('Patients/contact.html',patient_id = patient_id)
+@app.route('/Facilities')
+def Facilities():
+    patient_id = request.args.get('patient_id')
+    return render_template('Patients/facilities.html',patient_id = patient_id)
+@app.route('/Departments')
+def Departments():
+    patient_id = request.args.get('patient_id')
+    return render_template('Patients/departments.html',patient_id = patient_id)
+
 
 # =======================
 # Admin Routes
@@ -455,7 +482,6 @@ def register_admin():
 
         db.session.commit()
 
-        flash('Admin registered successfully!', 'success')
         return redirect(url_for('admin_login'))  # Correct redirection
 
     return render_template('Admin/register_admin.html')  # Ensure this template exists
@@ -473,17 +499,13 @@ def admin_login():
             db.session.commit()
             return redirect(url_for('admin_dashboard',admin_id=admin.admin_id))  # Redirect to admin dashboard
             
-        flash('Invalid admin ID or password', 'danger')  # Flash message for invalid login
         return redirect(url_for('admin_login'))  # Redirect back to the login page
 
     return render_template('Admin/admin_login.html') 
 
 @app.route('/view_doctor_requests', methods=['GET'])
 def view_doctor_requests():
-    # Logic to retrieve doctor requests from the database
-    # Assuming there is a status field in the Doctor model to indicate if the request is pending
     doctor_requests = DoctorRequest.query.filter_by(status='pending').all()  # Adjust this query as needed
-    
     return render_template('Admin/view_doctor_requests.html', doctor_requests=doctor_requests)
 
 
@@ -514,10 +536,6 @@ def approve_doctor_request(request_id):
         doctor_request.status = "Approved"  # Update status to approved
         db.session.commit()
         send_email(doctor_request.email,"Account Verification","Your Account is Verified now you can login using this password: ",Randompassword)
-        flash('Doctor request approved successfully!', 'success')
-    else:
-        flash('Doctor request not found.', 'danger')
-
     return redirect(url_for('admin_dashboard'))
 @app.route('/reject_doctor_request/<int:request_id>', methods=['POST'])
 def reject_doctor_request(request_id):
@@ -528,9 +546,6 @@ def reject_doctor_request(request_id):
     if doctor_request:
         db.session.delete(doctor_request)  # Remove the request
         db.session.commit()
-        flash('Doctor request rejected successfully!', 'success')
-    else:
-        flash('Doctor request not found.', 'danger')
 
     return redirect(url_for('admin_dashboard'))
 
@@ -592,10 +607,6 @@ def register_doctor():
         db.session.add(new_request)
         db.session.commit()
 
-        # Flash a success message
-        flash('Your registration request has been submitted and is pending approval.', 'success')
-
-        # Redirect to home or another page
         return redirect(url_for('home'))
 
     # Render the registration form
@@ -611,7 +622,6 @@ def doctor_login():
         doctor = Doctor.query.filter_by(email=email).first()
 
         if not doctor:
-            flash('Invalid email or password', 'danger')
             return render_template('Doctors/doctor_login.html')
 
         doctor_id = doctor.doctor_id
@@ -622,32 +632,58 @@ def doctor_login():
         if User and check_password_hash(doctor.password, password):
             User.status = "Loggined"
             db.session.commit()  # Commit the changes to the database
-            flash('Login successful!', 'success')
             return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))  
-        else:
-            flash('Invalid email or password', 'danger')
-
     return render_template('Doctors/doctor_login.html')
 
 @app.route('/doctor_dashboard')
 def doctor_dashboard():
     doctor_id = request.args.get('doctor_id')
     if not doctor_id:
-        flash('Doctor ID is missing', 'danger')
         return redirect(url_for('doctor_login'))
 
     User = LogginedDoctor.query.filter_by(doctor_id=doctor_id).first()
     if not User or User.status != "Loggined":
-        flash('Please log in to access the dashboard', 'danger')
         return redirect(url_for('doctor_login'))
 
     doctor = Doctor.query.filter_by(doctor_id=doctor_id).first()
     if not doctor:
-        flash('Doctor not found', 'danger')
         return redirect(url_for('doctor_login'))
     appointments = Appointment.query.filter_by(doctor_id=doctor_id).order_by(Appointment.date.asc()).all()
 
     return render_template('Doctors/doctor_dashboard.html', doctor = doctor, appointments=appointments)
+
+@app.route('/view_doctor_profile')
+def view_doctor_profile():
+    doctor_id = request.args.get('doctor_id')
+    if not doctor_id:
+        return redirect(url_for('doctor_login'))
+
+    # Fetch the logged-in doctor
+    logged_doctor = LogginedDoctor.query.filter_by(doctor_id=doctor_id).first()
+    if not logged_doctor or logged_doctor.status != "Loggined":
+        return redirect(url_for('doctor_login'))
+
+    # Fetch the doctor details
+    doctor = Doctor.query.get(doctor_id)  # Replace 'Doctor' with your actual model name
+    if not doctor:
+        return redirect(url_for('doctor_dashboard'))  # Redirect if doctor not found
+
+    return render_template('Doctors/view_doctor_profile.html', doctor=doctor)  # Pass doctor to the template
+@app.route('/doctor_appointments')
+def doctor_appointments():
+    doctor_id = request.args.get('doctor_id')
+    if not doctor_id:
+        return redirect(url_for('doctor_login'))
+
+    # Fetch upcoming appointments for the logged-in doctor
+    upcoming_appointments = Appointment.query.filter_by(doctor_id=doctor_id).filter(Appointment.date >= date.today()).all()
+
+    return render_template('Doctors/doctor_appointments.html', appointments=upcoming_appointments,doctor_id = doctor_id)
+
+@app.route('/DoctorAboutUs')
+def DoctorAboutUs():
+    doctor_id = request.args.get('doctor_id')
+    return render_template('Doctors/DoctorAbout.html',doctor_id = doctor_id)
 
 @app.route('/upload_prescription/<int:doctor_id>/<int:appointment_id>', methods=['POST'])
 def upload_prescription(doctor_id, appointment_id):
@@ -655,7 +691,6 @@ def upload_prescription(doctor_id, appointment_id):
     doctor = Doctor.query.get(doctor_id)
     
     if not appointments or not doctor:
-        flash("Appointment or Doctor not found.", "danger")
         return redirect(url_for('doctor_dashboard', doctor=doctor,appointments=appointments))
 
     # Handle the uploaded file
@@ -670,12 +705,32 @@ def upload_prescription(doctor_id, appointment_id):
             # Update the appointment's prescription path in the database
             appointments.prescription = filepath
             db.session.commit()
-            flash("Prescription uploaded successfully!", "success")
-        else:
-            flash("No file selected.", "warning")
 
     # Redirect back to the doctor's dashboard
     return redirect(url_for('doctor_dashboard', doctor_id=doctor_id,appointments=appointments))
+@app.route('/update_prescription/<int:appointment_id>', methods=['POST'])
+def update_prescription(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    
+    if 'prescription' not in request.files:
+        return redirect(url_for('doctor_appointments', doctor_id=appointment.doctor_id))
+
+    file = request.files['prescription']
+    
+    if file.filename == '':
+        return redirect(url_for('doctor_appointments', doctor_id=appointment.doctor_id))
+
+    # Save the new prescription file
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    # Update the appointment's prescription field
+    appointment.prescription = file_path
+    db.session.commit()
+    upcoming_appointments = Appointment.query.filter_by(doctor_id=appointment.doctor_id).filter(Appointment.date >= date.today()).all()
+
+    return redirect(url_for('doctor_appointments', doctor_id=appointment.doctor_id,appointment = upcoming_appointments))
 
 # =======================
 # logout
@@ -687,7 +742,6 @@ def logout_patient():
     User = LogginedPatient.query.filter_by(patient_id=patient_id).first()
     User.status = "Logged-out"
     db.session.commit()
-    flash('You have been logged out.', 'success')
     return redirect(url_for('home'))  # Redirect to home page
 
 @app.route('/logout_doctor')
@@ -698,10 +752,8 @@ def logout_doctor():
     if User:
         User.status = "Logged-out"  # Update the status to 'Logged-out'
         db.session.commit()  # Commit the changes
-        flash('You have successfully logged out.', 'success')
         return redirect(url_for('home'))
     else:
-        flash('Doctor not found. Unable to log out.', 'danger')
         return redirect(url_for('doctor_login'))
 
 @app.route('/logout_admin')
@@ -713,15 +765,13 @@ def logout_admin():
     if User:
         User.status = "Logged-out"  # Update the status to 'Logged-out'
         db.session.commit()  # Commit the changes
-        flash('You have successfully logged out.', 'success')
         return redirect(url_for('home'))
     else:
-        flash('Admin not found. Unable to log out.', 'danger')
-        return redirect(url_for('admin_login'))
+        return redirect(url_for('home'))
 
 if __name__ == '__main__':
     with app.app_context():
-        # db.dop_all()
+        # db.drop_all()
         db.create_all()  # Creates the tables in the database
         if not (Doctor.query.first() or Patient.query.first() or Admin.query.first()):
             populate_db()

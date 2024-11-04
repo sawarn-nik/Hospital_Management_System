@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Hospitals Contact Us</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-image: url('/static/uploads/backgroun1.avif');
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            color: #004d40;
+        }
+
+        .contact-container {
+            padding: 50px 0;
+        }
+
+        .contact-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffab00;
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .highlight {
+            color: #ffab00;
+        }
+
+        .contact-info {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .contact-info i {
+            color: #004d40;
+            margin-right: 10px;
+        }
+
+        .form-control, .btn {
+            background-color: white;
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #ffab00;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #004d40;
+        }
+
+        .form-section {
+            margin-top: 50px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        /* Styles for the "Back to Dashboard" button */
+        .dashboard-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-btn {
+            background-color: #004d40;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .dashboard-btn:hover {
+            background-color: #003833;
+            color: white;
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contact Us Section -->
+    <div class="container contact-container">
+        <h1 class="contact-title">Get in Touch with <span class="highlight">Apollo Hospitals</span></h1>
+
+        <div class="row">
+            <!-- Contact Info -->
+            <div class="col-md-6 contact-info">
+                <h2>Contact Information</h2>
+                <p><i class="fas fa-map-marker-alt"></i> Apollo Hospitals, 123 Health Avenue, Fort Kochi, Kerala, India</p>
+                <p><i class="fas fa-phone-alt"></i> +91 9381316232</p>
+                <p><i class="fas fa-envelope"></i> apollohospital069@gmail.com</p>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-md-6">
+                <h2>Leave Your Feedback</h2>
+                <form action="/ContactUs" method="POST" class="form-section">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter Your Name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter Your Email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Your Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="Enter Your Phone Number" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback">Feedback</label>
+                        <textarea class="form-control" id="feedback" rows="4" placeholder="Enter Your Feedback" name="feedback"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Back to Dashboard Button -->
+        <div class="dashboard-btn-container">
+            <a href="{{ url_for('patient_dashboard', patient_id=patient_id) }}" class="btn dashboard-btn">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, jQuery, and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
