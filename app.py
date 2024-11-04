@@ -830,7 +830,7 @@ def generate_graphs():
 if __name__ == '__main__':
     with app.app_context():
         generate_graphs()
-        # db.drop_all()
+        db.drop_all()
         db.create_all()  # Creates the tables in the database
         if not (Doctor.query.first() or Patient.query.first() or Admin.query.first()):
             populate_db()
