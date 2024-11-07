@@ -95,7 +95,7 @@
         }
 
         /* Additional styles for the graph section */
-        .data-visualization img {
+        .data-visualization img-fluid {
             border-radius: 10px;
             margin: 10px 0;
         }
@@ -126,7 +126,12 @@
             text-transform: uppercase;
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
-
+        .graph-image {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
         .dashboard-btn:hover {
             background-color: #003833;
             color: white;
@@ -207,7 +212,9 @@
             </div>
         </div>
         <div class="row text-center mt-3">
-            <img src="static/all_charts.png" class="img-fluid">
+            <div class="col-md-12">
+                <img src="static/all_charts.png" class="img-fluid graph-image" alt="Data Visualizations">
+            </div>
         </div>
 
         <!-- Back to Dashboard Button -->

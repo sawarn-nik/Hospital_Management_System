@@ -4,49 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
 
-       <!-- Bootstrap CSS -->
-       <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-       <!-- Font Awesome for icons -->
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- Custom CSS -->
     <style>
         body {
-            background-image: url('/static/uploads/backgroun1.avif'); /* Add your background image here */
-            background-size: cover; /* Cover the entire background */
-            background-repeat: no-repeat; /* Prevent repetition */
+            background-image: url('/static/uploads/backgroun1.avif');
+            background-size: cover;
+            background-repeat: no-repeat;
             font-family: Arial, sans-serif;
-            color: #004d40; /* Default text color */
+            color: #004d40;
         }
 
         .main-container {
             padding: 50px 0;
         }
-        .dashboard-btn-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
-        .dashboard-btn {
-            background-color: #004d40;
-            color: white;
-            font-size: 1.1rem;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
 
-        .dashboard-btn:hover {
-            background-color: #003833;
-            color: white;
-            transform: scale(1.05);
-            text-decoration: none;
-        }
         .title {
             font-size: 3rem;
             font-weight: bold;
@@ -56,7 +34,7 @@
         }
 
         .title span {
-            color: #ffab00; /* Accent color for title */
+            color: #ffab00;
         }
 
         .about-text {
@@ -67,7 +45,7 @@
         }
 
         .about-images img {
-            width: 80%;
+            width: 100%;
             border-radius: 10px;
             transition: transform 0.3s ease;
         }
@@ -82,7 +60,7 @@
         }
 
         .highlight {
-            color: #ffab00; /* Accent color for highlighted text */
+            color: #ffab00;
             font-weight: bold;
         }
 
@@ -118,8 +96,52 @@
                 transform: translateX(0);
             }
         }
-    </style>
 
+        .data-visualization img-fluid {
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .graph-section {
+            margin-top: 40px;
+        }
+
+        .graph-header {
+            margin-bottom: 30px;
+        }
+
+        .graph-image {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .dashboard-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-btn {
+            background-color: #004d40;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dashboard-btn:hover {
+            background-color: #003833;
+            color: white;
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+    </style>
+</head>
 <body>
 
     <!-- Main Section -->
@@ -131,10 +153,10 @@
             <div class="col-md-6 about-text">
                 <h2>About Us</h2>
                 <p>
-                    At <span class="highlight">Apollo</span>, we prioritize compassionate care combined with cutting-edge medical services. Our hospital is dedicated to the well-being of our patients, offering a holistic approach that addresses both physical and emotional needs. We strive to create an environment where every patient feels supported and respected.
+                    At <span class="highlight">Apollo</span>, we prioritize compassionate care combined with cutting-edge medical services.
                 </p>
                 <p>
-                    With a dedicated team of medical professionals and state-of-the-art facilities, <span class="highlight">Apollo</span> is committed to providing exceptional healthcare services that foster health, healing, and hope.
+                    With a dedicated team of medical professionals, <span class="highlight">Apollo</span> is committed to providing exceptional healthcare services.
                 </p>
             </div>
             <div class="col-md-6 about-images">
@@ -150,11 +172,11 @@
             <div class="col-md-6 about-text">
                 <h2>Our Vision</h2>
                 <p>
-                    To be a beacon of excellence in healthcare, where patients receive innovative, high-quality care that promotes lifelong well-being.
+                    To be a beacon of excellence in healthcare, promoting lifelong well-being.
                 </p>
                 <h2>Our Mission</h2>
                 <p>
-                    To deliver exceptional healthcare services with compassion, integrity, and a commitment to continuous improvement, creating a positive impact in our community.
+                    To deliver exceptional healthcare services with compassion and a commitment to improvement.
                 </p>
             </div>
         </div>
@@ -169,21 +191,20 @@
             <div class="col-md-4">
                 <i class="fas fa-stethoscope fa-3x" style="color: #ffab00"></i>
                 <h4>Advanced Medical Care</h4>
-                <p>Our team of specialists offers comprehensive care using the latest medical technologies and treatment methods.</p>
+                <p>Our team offers comprehensive care using the latest medical technologies.</p>
             </div>
             <div class="col-md-4">
                 <i class="fas fa-heartbeat fa-3x" style="color: #ffab00"></i>
                 <h4>Patient-Centered Approach</h4>
-                <p>A compassionate and supportive environment designed to make patients feel valued and cared for.</p>
+                <p>We ensure a supportive environment for every patient.</p>
             </div>
             <div class="col-md-4">
                 <i class="fas fa-clinic-medical fa-3x" style="color: #ffab00"></i>
                 <h4>Modern Facilities</h4>
-                <p>State-of-the-art facilities equipped to handle a range of medical needs with comfort and efficiency.</p>
+                <p>State-of-the-art facilities to handle a range of medical needs.</p>
             </div>
         </div>
-    </div>
-        
+
         <!-- Data Visualization Section -->
         <div class="row mt-5 data-visualization graph-section">
             <div class="col-md-12 text-center graph-header">
@@ -192,11 +213,17 @@
             </div>
         </div>
         <div class="row text-center mt-3">
-            <img src="static/all_charts.png" class="img-fluid">
+            <div class="col-md-12">
+                <img src="static/all_charts.png" class="img-fluid graph-image" alt="Data Visualizations">
+            </div>
         </div>
-    <div class = "dashboard-btn-container">    
-    <a href="{{ url_for('doctor_dashboard', doctor_id=doctor_id) }}" class="btn dashboard-btn">Back to Dashboard</a>
+
+        <!-- Back to Dashboard Button -->
+        <div class="dashboard-btn-container">    
+            <a href="{{ url_for('doctor_dashboard', doctor_id=doctor_id) }}" class="btn dashboard-btn">Back to Dashboard</a>
+        </div>
     </div>
+
     <!-- Bootstrap JS, jQuery, and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

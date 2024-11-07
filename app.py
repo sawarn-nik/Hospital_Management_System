@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -92,7 +92,7 @@ class Doctor(db.Model):
     phone = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(200), nullable=False)  # For hashed passwords
-    room_no = db.Column(db.Integer, unique=True)
+    room_no = db.Column(db.Integer, unique=True, autoincrement = True)
     status = db.Column(db.String(20), default='pending')  # Default to 'pending'
     
     # New fields for storing the uploaded files
@@ -133,7 +133,7 @@ class Feedback(db.Model):
     phone = db.Column(db.String(15))
     email = db.Column(db.String(100))
     feedback = db.Column(db.String(500), nullable=False)
-
+    status = db.Column(db.String(10), default="Pending")
 class Appointment(db.Model):
     __tablename__ = 'appointments'
     appointment_id = db.Column(db.Integer, primary_key=True)
@@ -176,10 +176,10 @@ def populate_db():
                email="johnpaul@example.com", password=generate_password_hash("doc3",method='pbkdf2:sha256'),
                room_no=103, profile_picture_path="uploads/johnpaul.jpg",
                resume_path="uploads/johnpaul_resume.pdf", status="approved"),
-        Doctor(name="Jame Smith", specialization="Surgeon", phone="0987654322",
-               email="jamesmith@example.com", password=generate_password_hash("doc4",method='pbkdf2:sha256'),
-               room_no=104, profile_picture_path="uploads/jamesmith.jpg",
-               resume_path="uploads/jamesmith_resume.pdf", status="approved")
+        Doctor(name="Jaime Smith", specialization="Surgeon", phone="0987654322",
+               email="jaimesmith@example.com", password=generate_password_hash("doc4",method='pbkdf2:sha256'),
+               room_no=104, profile_picture_path="uploads/jaimesmith.jpg",
+               resume_path="uploads/jaimesmith_resume.pdf", status="approved")
     ]
 
 # Dummy data for patients
@@ -358,7 +358,7 @@ def patient_dashboard():
     
     User = LogginedPatient.query.filter_by(patient_id=patient_id).first()
     if not User or User.status != "Loggined":
-        return redirect(url_for('doctor_login'))
+        return redirect(url_for('login_patient'))
 
     patient = Patient.query.get(patient_id)
     if not patient:
@@ -373,7 +373,7 @@ def view_profile():
     
     User = LogginedPatient.query.filter_by(patient_id=patient_id).first()
     if not User or User.status != "Loggined":
-        return redirect(url_for('doctor_login'))
+        return redirect(url_for('login_patient'))
 
     patient = Patient.query.get(patient_id)  # Fetch patient details
     if not patient:
@@ -535,13 +535,14 @@ def approve_doctor_request(request_id):
         db.session.add(new_doctor)
         doctor_request.status = "Approved"  # Update status to approved
         db.session.commit()
-        send_email(doctor_request.email,"Account Verification","Your Account is Verified now you can login using this password: ",Randompassword)
+        body = "Email: "+doctor_request.email+"\nPassword: \""+Randompassword+"\"\nTeam Apollo Hospital\n"
+        send_email(doctor_request.email,"Account Verification","Your Account is Verified now you can login using your credentials:- \n",body)
     return redirect(url_for('admin_dashboard'))
 @app.route('/reject_doctor_request/<int:request_id>', methods=['POST'])
 def reject_doctor_request(request_id):
     doctor_request = DoctorRequest.query.get(request_id)
     doctor_request.status = "Rejected"  # Update status to approved
-    send_email(doctor_request.email,"Account Request Rejected","Your Account is not Verified.","You can try again after 15 days.")
+    send_email(doctor_request.email,"Account Request Rejected","Your Account is not Approved.","You can try again after 15 days.")
 
     if doctor_request:
         db.session.delete(doctor_request)  # Remove the request
@@ -555,6 +556,30 @@ def admin_dashboard():
 
     return render_template('Admin/admin_dashboard.html',admin_id = admin_id)
 
+@app.route('/view_feedback')
+def view_feedback():
+    # Query the Feedback table to get all feedback records
+    feedback_records = Feedback.query.all()
+    
+    # Render the feedback in the template
+    return render_template('Admin/view_feedback.html', feedback=feedback_records)
+
+@app.route('/mark_feedback_done/<int:feedback_id>', methods=['POST'])
+def mark_feedback_done(feedback_id):
+    # Query the feedback entry
+    feedback_item = Feedback.query.get(feedback_id)
+
+    if feedback_item and feedback_item.status == "Pending":
+        # Send an email to the patient
+        subject = "Thank You for Your Feedback"
+        message = f"Dear {feedback_item.name},\n\nThank you for your feedback! We appreciate your input and will use it to improve our services.\n\nBest regards,\n"
+        recipient = feedback_item.email
+        last = "Team Apollo Hospital"
+        # Assuming send_email is a function you've defined to handle email sending
+        send_email(recipient, subject, message,last )
+        feedback_item.status = "Done"
+        db.session.commit()
+    return redirect(url_for('view_feedback'))
 # =======================
 # Doctor Routes
 # =======================
@@ -606,12 +631,19 @@ def register_doctor():
         # Add the new request to the database
         db.session.add(new_request)
         db.session.commit()
+        
+        send_email(
+            email,
+            "Registration Successful",
+            f"Dr. {name}, you have successfully registered to work in our hospital.\nPlease wait for our approval.\n",
+            "Team Apollo Hospital"
+        )
 
         return redirect(url_for('home'))
 
     # Render the registration form
     return render_template('Doctors/register_doctor.html')
-
+universalPassword = ""
 @app.route('/doctor_login', methods=['GET', 'POST'])
 def doctor_login():
     if request.method == 'POST':
@@ -630,6 +662,8 @@ def doctor_login():
 
         # Check if doctor exists and verify password
         if User and check_password_hash(doctor.password, password):
+            global universalPassword
+            universalPassword = password
             User.status = "Loggined"
             db.session.commit()  # Commit the changes to the database
             return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))  
@@ -684,12 +718,61 @@ def doctor_appointments():
 def DoctorAboutUs():
     doctor_id = request.args.get('doctor_id')
     return render_template('Doctors/DoctorAbout.html',doctor_id = doctor_id)
+@app.route('/change_password_page/<doctor_id>', methods=['GET', 'POST'])
+def change_password_page(doctor_id):
+    doctor = Doctor.query.filter_by(doctor_id=doctor_id).first()
+    if not doctor:
+        return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))
+
+    if request.method == 'POST':
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+        confirm_new_password = request.form.get('confirm_new_password')
+
+        if not (check_password_hash(doctor.password, old_password)) or (new_password != confirm_new_password):
+            return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))  # Or show an error message
+
+        # Update password in the database
+        hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
+        global universalPassword
+        universalPassword = new_password
+        doctor.password = hashed_password
+        db.session.commit()
+        subject = "Password Changed"
+        message = f"Hello Dr. {doctor.name},\n\nHere are your Updated Login Details:\n" \
+                f"Email: {doctor.email}\nPassword: \"{universalPassword}\"\n\n" \
+                "Please keep your credentials secure.\n\nBest Regards.\n"
+        send_email(doctor.email, subject, message, "Team Apollo Hospital")
+
+        return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))
+
+    return render_template('change_password.html', doctor=doctor)
+
+@app.route('/forgot_password/<int:doctor_id>')
+def forgot_password(doctor_id):
+    # Query the doctor based on the ID
+    doctor = Doctor.query.get(doctor_id)
+    
+    # Check if the doctor exists
+    if not doctor:
+        return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))
+    print(universalPassword)
+    # Prepare the email content
+    subject = "Password Recovery"
+    message = f"Hello Dr. {doctor.name},\n\nHere are your login details:\n" \
+              f"Email: {doctor.email}\nPassword: \"{universalPassword}\"\n\n" \
+              "Please keep your credentials secure.\n\nBest Regards.\n"
+    
+    # Send the email
+    send_email(doctor.email, subject, message, "Team Apollo Hospital")
+    
+    return redirect(url_for('doctor_dashboard', doctor_id=doctor_id))
 
 @app.route('/upload_prescription/<int:doctor_id>/<int:appointment_id>', methods=['POST'])
 def upload_prescription(doctor_id, appointment_id):
     appointments = Appointment.query.get(appointment_id)
     doctor = Doctor.query.get(doctor_id)
-    
+    patient = Patient.query.get(appointments.patient_id)
     if not appointments or not doctor:
         return redirect(url_for('doctor_dashboard', doctor=doctor,appointments=appointments))
 
@@ -705,13 +788,14 @@ def upload_prescription(doctor_id, appointment_id):
             # Update the appointment's prescription path in the database
             appointments.prescription = filepath
             db.session.commit()
-
+    send_email(patient.email,"Prescription Uploaded","Your Doctor has uploaded the prescription.\nPlease Login and check it.","Team Apollo Hospital")
     # Redirect back to the doctor's dashboard
     return redirect(url_for('doctor_dashboard', doctor_id=doctor_id,appointments=appointments))
 @app.route('/update_prescription/<int:appointment_id>', methods=['POST'])
 def update_prescription(appointment_id):
     appointment = Appointment.query.get_or_404(appointment_id)
-    
+    patient = Patient.query.get(appointment.patient_id) if appointment else None 
+
     if 'prescription' not in request.files:
         return redirect(url_for('doctor_appointments', doctor_id=appointment.doctor_id))
 
@@ -729,7 +813,13 @@ def update_prescription(appointment_id):
     appointment.prescription = file_path
     db.session.commit()
     upcoming_appointments = Appointment.query.filter_by(doctor_id=appointment.doctor_id).filter(Appointment.date >= date.today()).all()
-
+    if patient:
+        send_email(
+            patient.email,
+            "Prescription Updated",
+            "Your Doctor has updated the prescription.\nPlease login and check it.",
+            "Team Apollo Hospital"
+        )
     return redirect(url_for('doctor_appointments', doctor_id=appointment.doctor_id,appointment = upcoming_appointments))
 
 # =======================
@@ -761,7 +851,6 @@ def logout_admin():
     admin_id = request.args.get('admin_id')
     print(admin_id)
     User = LogginedAdmin.query.filter_by(admin_id=admin_id).first()
-    # Check if the admin exists
     if User:
         User.status = "Logged-out"  # Update the status to 'Logged-out'
         db.session.commit()  # Commit the changes
@@ -769,29 +858,29 @@ def logout_admin():
     else:
         return redirect(url_for('home'))
 
-def generate_graphs():
-    import matplotlib.pyplot as plt
-    import numpy as np
+import matplotlib.pyplot as plt
+import numpy as np
 
+def generate_graphs():
     # Data for plotting
     x = np.arange(1, 11)
     y1 = np.random.randint(1, 100, size=10)  # Random patient visits for 10 days
     y2 = np.random.randint(1, 100, size=10)  # Random treatment outcomes
 
     # Creating the first graph (Patient Visits)
-    plt.figure(figsize=(15, 5))
-    plt.subplot(1, 3, 1)  # First plot in a 1x3 grid
-    plt.bar(x, y1, color='#004d40')  # Dark teal color for the bars
-    plt.title('Patient Visits Over 10 Days', fontsize=16, color='#004d40', pad=20)  # Adding padding to the title
+    plt.figure(figsize=(10, 15))
+    plt.subplot(3, 1, 1)
+    plt.bar(x, y1, color='#004d40')
+    plt.title('Patient Visits Over 10 Days', fontsize=16, color='#004d40', pad=20)
     plt.xlabel('Days', fontsize=14)
     plt.ylabel('Number of Patients', fontsize=14)
     plt.xticks(x)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
 
     # Creating the second graph (Treatment Outcomes)
-    plt.subplot(1, 3, 2)  # Second plot in a 1x3 grid
-    plt.plot(x, y2, marker='o', color='#00796b', linestyle='-', linewidth=2)  # Lighter shade of teal
-    plt.title('Treatment Outcomes', fontsize=16, color='#004d40', pad=20)  # Adding padding to the title
+    plt.subplot(3, 1, 2)
+    plt.plot(x, y2, marker='o', color='#00796b', linestyle='-', linewidth=2)
+    plt.title('Treatment Outcomes', fontsize=16, color='#004d40', pad=20)
     plt.xlabel('Days', fontsize=14)
     plt.ylabel('Outcome Score', fontsize=14)
     plt.xticks(x)
@@ -799,38 +888,51 @@ def generate_graphs():
 
     # Data for the pie chart (Facilities Provided)
     facilities = ['Emergency Care', 'Inpatient Services', 'Outpatient Services', 'Surgical Services', 'Diagnostic Imaging']
-    sizes = [25, 35, 20, 15, 5]  # Represents the percentage of each facility
+    sizes = [25, 35, 20, 15, 5]
 
     # Define colors using a dark teal palette
     pie_colors = ['#004d40', '#00796b', '#009688', '#80cbc4', '#b2dfdb']
 
     # Creating the third graph (Facilities Pie Chart)
-    plt.subplot(1, 3, 3)  # Third plot in a 1x3 grid
+    plt.subplot(3, 1, 3)
     wedges, texts, autotexts = plt.pie(
         sizes, labels=None, colors=pie_colors, startangle=140, explode=(0.1, 0, 0, 0, 0), autopct='%1.1f%%'
     )
-
-    # Positioning labels outside the pie chart with adjusted spacing
-    label_distance = 1.5  # Increased radial distance for clearer label spacing
+    for autotext in autotexts:
+        autotext.set_color('red')
+    # Positioning labels around the pie chart with adjusted spacing
+    label_distance = 1.4  # Increased radial distance for clearer label spacing
     for i, wedge in enumerate(wedges):
         angle = (wedge.theta1 + wedge.theta2) / 2.0
-        x = label_distance * wedge.r * np.cos(np.deg2rad(angle))  # Position labels further outside
-        y = label_distance * wedge.r * np.sin(np.deg2rad(angle))
-        ha = 'right' if angle > 90 else 'left'  # Adjust horizontal alignment based on position
+        x = label_distance * np.cos(np.deg2rad(angle))
+        y = label_distance * np.sin(np.deg2rad(angle))
+
+        # Custom positioning for specific labels
+        if facilities[i] == 'Diagnostic Imaging':
+            x -= 0.2  # Move it further to the left
+        elif facilities[i] == 'Surgical Services':
+            y -= 0.2  # Move it slightly downwards
+
+        # Adjust text alignment based on angle
+        ha = 'left' if angle < 90 or angle > 270 else 'right'
+        
+        # Plot label with custom positioning
         plt.text(x, y, facilities[i], ha=ha, va='center', color='#004d40', fontsize=10, fontweight='bold')
 
     plt.axis('equal')
     plt.title('Facilities Provided', fontsize=16, color='#004d40', pad=35)  # Additional padding for the title
 
     # Save all graphs in a single row with a consistent style
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.1, 1, 1])  # Adjust layout to ensure enough space for labels
     plt.savefig('static/all_charts.png', bbox_inches='tight', dpi=300)
-    plt.show()
+    # plt.show()
+
+generate_graphs()
 
 if __name__ == '__main__':
     with app.app_context():
         generate_graphs()
-        db.drop_all()
+        # db.drop_all()
         db.create_all()  # Creates the tables in the database
         if not (Doctor.query.first() or Patient.query.first() or Admin.query.first()):
             populate_db()
