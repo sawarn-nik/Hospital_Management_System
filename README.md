@@ -1,19 +1,19 @@
-### Hospital Management System
+# Hospital Management System
 ## Project Description
 The Hospital Management System is a web-based application developed using Flask, HTML, CSS, and Bootstrap. The system incorporates Role-Based Access Control (RBAC) to ensure secure and efficient hospital operations. It provides distinct interfaces and functionalities for admins, doctors, and patients, showcasing creativity, problem-solving, and technical skills in designing secure user interfaces.
 
 ## Key Features
 RBAC Implementation
-# Admins:
+### Admins:
 Manage and control hospital operations, including doctor approvals, patient records, and resource allocation.
 Access exclusive analytics dashboards for resource utilization.
-# Doctors:
+### Doctors:
 View and manage assigned patient data.
 Update personal profiles with admin verification.
-# Patients:
+### Patients:
 View personal medical records and treatment schedules securely.
 Secure and Functional UI
-# Distinct access levels based on user roles.
+### Distinct access levels based on user roles.
 Secure login and registration systems for admins and doctors.
 Alerts and notifications for important actions (e.g., doctor approval, login failures).
 
@@ -34,40 +34,13 @@ Building secure backend functionality with Flask.
 Integrating RBAC principles into frontend pages using dynamic elements (e.g., role-specific menus).
 Using Bootstrap for responsive and interactive designs.
 ## Technologies Used
-# Flask: Backend framework for routing, session management, and database interactions.
-# HTML & CSS: For crafting a responsive and accessible UI.
-# Bootstrap: For modern styling and layout enhancements.
-# SQLite: Lightweight database for storing user and role-based data.
+### Flask: Backend framework for routing, session management, and database interactions.
+### HTML & CSS: For crafting a responsive and accessible UI.
+### Bootstrap: For modern styling and layout enhancements.
+### SQLite: Lightweight database for storing user and role-based data.
 
-### Installation Guide
-Prerequisites
-Python 3.8+
-Flask installed in your environment
-Setup
-Clone or download the repository:
 
-bash
-
-git clone <repository-url>
-cd hospital-management-system
-Create a virtual environment:
-
-bash
-
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-Install dependencies:
-
-bash
-
-pip install -r requirements.txt
-Run the Flask application:
-
-flask run
-Open your browser and navigate to:
-
-http://localhost:5000
-File Structure
+## File Structure
 
 hospital-management-system/
 ├── instance
@@ -113,27 +86,27 @@ hospital-management-system/
 ├── requirements.txt    # Python dependencies
 └── README.md           # Documentation
 
-### RBAC in Action
-## Admin Role:
+## RBAC in Action
+### Admin Role:
 Can approve/reject doctor requests.
 Access sensitive hospital data like patient records and facility usage.
-## Doctor Role:
+### Doctor Role:
 Restricted to viewing assigned patient details.
 Requires admin approval for profile updates.
-## Patient Role:
+### Patient Role:
 Limited to personal data access, ensuring data privacy.
 
-### Usage
-## Admin Login:
+## Usage
+### Admin Login:
 Admins can log in using their credentials to access dashboards for managing hospital operations.
 
-## Doctor Registration:
+### Doctor Registration:
 Doctors can submit a registration request, requiring admin approval.
 
-## Role-Specific Dashboards:
+### Role-Specific Dashboards:
 Each role sees a tailored dashboard based on their permissions.
 
 ## Future Enhancements
-# Add multi-factor authentication for enhanced security.
-# Implement a logging system to track user actions by role.
-# Enhance analytics with interactive charts and graphs.
+### Add multi-factor authentication for enhanced security.
+### Implement a logging system to track user actions by role.
+### Enhance analytics with interactive charts and graphs.
