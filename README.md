@@ -33,19 +33,43 @@ Technical Proficiency:
 Building secure backend functionality with Flask.
 Integrating RBAC principles into frontend pages using dynamic elements (e.g., role-specific menus).
 Using Bootstrap for responsive and interactive designs.
+
 ## Technologies Used
 ### Flask: Backend framework for routing, session management, and database interactions.
 ### HTML & CSS: For crafting a responsive and accessible UI.
 ### Bootstrap: For modern styling and layout enhancements.
 ### SQLite: Lightweight database for storing user and role-based data.
 
+## RBAC in Action
+### Admin Role:
+Can approve/reject doctor requests.
+Access sensitive hospital data like patient records and facility usage.
+### Doctor Role:
+Restricted to viewing assigned patient details.
+Requires admin approval for profile updates.
+### Patient Role:
+Limited to personal data access, ensuring data privacy.
 
+## Usage
+### Admin Login:
+Admins can log in using their credentials to access dashboards for managing hospital operations.
+
+### Doctor Registration:
+Doctors can submit a registration request, requiring admin approval.
+
+### Role-Specific Dashboards:
+Each role sees a tailored dashboard based on their permissions.
+
+## Future Enhancements
+### Add multi-factor authentication for enhanced security.
+### Implement a logging system to track user actions by role.
+### Enhance analytics with interactive charts and graphs.
 ## File Structure
 
-```File Structure```
-```hospital-management-system/ ```
-```├── instance ```
-```│ ├── hospital.db ```
+File Structure
+```hospital-management-system/
+├── instance
+│ ├── hospital.db
 ├── myenv 
 ├── static/ # Static files (CSS, JavaScript, images) 
 │ ├── js/ # Custom JavaScript files 
@@ -86,27 +110,4 @@ Using Bootstrap for responsive and interactive designs.
 ├── requirements.txt # Python dependencies 
 └── README.md # Documentation
 
-## RBAC in Action
-### Admin Role:
-Can approve/reject doctor requests.
-Access sensitive hospital data like patient records and facility usage.
-### Doctor Role:
-Restricted to viewing assigned patient details.
-Requires admin approval for profile updates.
-### Patient Role:
-Limited to personal data access, ensuring data privacy.
 
-## Usage
-### Admin Login:
-Admins can log in using their credentials to access dashboards for managing hospital operations.
-
-### Doctor Registration:
-Doctors can submit a registration request, requiring admin approval.
-
-### Role-Specific Dashboards:
-Each role sees a tailored dashboard based on their permissions.
-
-## Future Enhancements
-### Add multi-factor authentication for enhanced security.
-### Implement a logging system to track user actions by role.
-### Enhance analytics with interactive charts and graphs.
