@@ -42,49 +42,7 @@ Using Bootstrap for responsive and interactive designs.
 
 ## File Structure
 
-hospital-management-system/
-├── instance
-│   ├── hospital.db
-├── myenv
-├── static/             # Static files (CSS, JavaScript, images)
-│   ├── js/             # Custom JavaScript files
-│   └── uploads/ 
-│   └── all_charts.png
-├── templates/          # HTML templates
-|   ├── Admin/ 
-│   │   └── admin_dashboard.html
-│   │   └── admin_login.html
-│   │   └── admin_selection.html
-│   │   └── register_admin.html
-│   │   └── view_doctor_requests.html
-│   │   └── view_feedback.html
-|   ├── Doctors/ 
-│   │   └── doctor_appointments.html
-│   │   └── doctor_dashboard.html
-│   │   └── doctor_login.html
-│   │   └── doctor_selection.html
-│   │   └── doctor_update.html
-│   │   └── DoctorAbout.html
-│   │   └── register_doctor.html
-│   │   └── view_doctor_profile.html
-|   ├── Patients/ 
-│   │   └── about.html
-│   │   └── book_appointment.html 
-│   │   └── contact.html
-│   │   └── departments.html
-│   │   └── facilities.html 
-│   │   └── login_patient.html 
-│   │   └── patient_dashboard.html 
-│   │   └── patient_selection.html 
-│   │   └── register_patient.html 
-│   │   └── view_appointments.html 
-│   │   └── view_profile.html
-|   ├──change_password.html
-|   └──index.html
-├── .gitignore
-├── app.py
-├── requirements.txt    # Python dependencies
-└── README.md           # Documentation
+```hospital-management-system/ ├── instance │ ├── hospital.db ├── myenv ├── static/ # Static files (CSS, JavaScript, images) │ ├── js/ # Custom JavaScript files │ └── uploads/ │ └── all_charts.png ├── templates/ # HTML templates | ├── Admin/ │ │ └── admin_dashboard.html │ │ └── admin_login.html │ │ └── admin_selection.html │ │ └── register_admin.html │ │ └── view_doctor_requests.html │ │ └── view_feedback.html | ├── Doctors/ │ │ └── doctor_appointments.html │ │ └── doctor_dashboard.html │ │ └── doctor_login.html │ │ └── doctor_selection.html │ │ └── doctor_update.html │ │ └── DoctorAbout.html │ │ └── register_doctor.html │ │ └── view_doctor_profile.html | ├── Patients/ │ │ └── about.html │ │ └── book_appointment.html │ │ └── contact.html │ │ └── departments.html │ │ └── facilities.html │ │ └── login_patient.html │ │ └── patient_dashboard.html │ │ └── patient_selection.html │ │ └── register_patient.html │ │ └── view_appointments.html │ │ └── view_profile.html | ├──change_password.html | └──index.html ├── .gitignore ├── app.py ├── requirements.txt # Python dependencies └── README.md           # Documentation```
 
 ## RBAC in Action
 ### Admin Role:
